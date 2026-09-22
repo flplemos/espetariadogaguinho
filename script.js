@@ -502,6 +502,10 @@ const performCepSearch = async (cepText) => {
         document.getElementById('cidade').value = `${data.localidade} - ${data.uf}`;
         document.getElementById('address-fields').classList.add('active');
         calculateFreight(data);
+        
+        addressData.numero = document.getElementById('numero').value;
+        addressData.complemento = document.getElementById('complemento').value;
+        localStorage.setItem('gaguinho_address', JSON.stringify(addressData));
     } catch {
         showInfoModal('Erro', 'CEP não encontrado. Verifique e tente novamente.');
     } finally {
@@ -518,8 +522,20 @@ document.getElementById('btn-cep').addEventListener('click', () => {
     performCepSearch(cepText);
 });
 
-document.getElementById('numero').addEventListener('input', updateCheckoutSummary);
-document.getElementById('complemento').addEventListener('input', updateCheckoutSummary);
+document.getElementById('numero').addEventListener('input', () => {
+    updateCheckoutSummary();
+    if (addressData) {
+        addressData.numero = document.getElementById('numero').value;
+        localStorage.setItem('gaguinho_address', JSON.stringify(addressData));
+    }
+});
+document.getElementById('complemento').addEventListener('input', () => {
+    updateCheckoutSummary();
+    if (addressData) {
+        addressData.complemento = document.getElementById('complemento').value;
+        localStorage.setItem('gaguinho_address', JSON.stringify(addressData));
+    }
+});
 
 // WhatsApp Checkout
 document.getElementById('btn-checkout').addEventListener('click', () => {
@@ -653,6 +669,13 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(checkStoreStatus, 60000); // Check every minute
     
     loadUserData();
+    
+    // Auto-fetch if browser restored the input value but we have no addressData
+    const cepVal = document.getElementById('cep').value.replace(/\D/g, '');
+    if (!addressData && cepVal.length === 8) {
+        performCepSearch(cepVal);
+    }
+    
     renderMenu();
     setupScrollSpy();
 });
