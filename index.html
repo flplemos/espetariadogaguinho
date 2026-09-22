@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Espetaria do Gaguinho - Cardápio Digital</title>
+    <link rel="icon" type="image/jpeg" href="logo.jpg">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Ionicons for Icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <!-- Login Modal -->
+    <div class="login-overlay" id="login-overlay">
+        <div class="login-modal">
+            <button class="close-login" id="close-login"><ion-icon name="close"></ion-icon></button>
+            <h2>Bem-vindo!</h2>
+            <p>Para agilizar seu pedido, informe seus dados:</p>
+            <input type="text" id="user-name" placeholder="Seu Nome" required>
+            <input type="tel" id="user-phone" placeholder="Seu WhatsApp (com DDD)" required>
+            <button id="btn-login" class="btn-success">Salvar Dados</button>
+        </div>
+    </div>
+
+    <!-- Confirm Clear Modal -->
+    <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-modal">
+            <h2>Esvaziar Carrinho?</h2>
+            <p>Tem certeza que deseja remover todos os itens do seu pedido?</p>
+            <div class="confirm-actions">
+                <button class="btn-cancel" id="btn-cancel-clear">Cancelar</button>
+                <button class="btn-danger" id="btn-confirm-clear">Sim, esvaziar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Closed Store Modal -->
+    <div class="confirm-overlay" id="closed-overlay">
+        <div class="confirm-modal">
+            <h2 style="color: var(--danger);">Loja Fechada 🌙</h2>
+            <p style="margin-bottom: 16px;">O estabelecimento se encontra fechado no momento.</p>
+            <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 24px;">
+                <p style="margin:0; color: white; font-weight: 600; font-size: 0.95rem;">Horário de funcionamento:</p>
+                <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 0.9rem; line-height: 1.4;">Qua à Sex: 17:00 as 00:00<br>Sáb e Dom: 12:00 as 00:00</p>
+            </div>
+            <button class="btn-primary" id="btn-close-closed" style="width: 100%;">Entendi</button>
+        </div>
+    </div>
+
+    <!-- Generic Info Modal -->
+    <div class="confirm-overlay" id="info-overlay" style="z-index: 4000;">
+        <div class="confirm-modal">
+            <h2 id="info-title">Aviso</h2>
+            <p id="info-message" style="margin-bottom: 24px;"></p>
+            <button class="btn-primary" id="btn-close-info" style="width: 100%;">OK</button>
+        </div>
+    </div>
+
+    <!-- Reviews Modal -->
+    <div class="reviews-overlay" id="reviews-overlay">
+        <div class="reviews-modal">
+            <button class="close-reviews" id="close-reviews"><ion-icon name="close"></ion-icon></button>
+            <h2>Avaliações</h2>
+            <div class="reviews-list" id="reviews-list">
+                <!-- Injected via JS -->
+            </div>
+            
+            <div class="review-input-area" id="review-input-area" style="display: none;">
+                <div class="star-rating-select" id="star-rating-select" style="display: flex; gap: 8px; justify-content: center; margin-bottom: 12px; font-size: 2rem; color: var(--border); cursor: pointer;">
+                    <ion-icon name="star" data-value="1" style="color: #FBBF24;"></ion-icon>
+                    <ion-icon name="star" data-value="2" style="color: #FBBF24;"></ion-icon>
+                    <ion-icon name="star" data-value="3" style="color: #FBBF24;"></ion-icon>
+                    <ion-icon name="star" data-value="4" style="color: #FBBF24;"></ion-icon>
+                    <ion-icon name="star" data-value="5" style="color: #FBBF24;"></ion-icon>
+                </div>
+                <textarea id="review-text" placeholder="Escreva sua avaliação..." rows="3"></textarea>
+                <button id="btn-submit-review" class="btn-success" style="padding: 10px; font-size: 1rem; margin-top: 8px;">Enviar Avaliação</button>
+            </div>
+            
+            <button id="btn-rate-here" class="btn-primary" style="margin-top: 16px; width: 100%;">Avalie Aqui</button>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="user-actions">
+            <div id="store-status" class="store-status-badge closed">
+                <div class="status-dot"></div>
+                <span id="store-status-text">Fechado</span>
+            </div>
+            <button id="btn-open-reviews" class="btn-review-header"><ion-icon name="star" style="color: #FBBF24;"></ion-icon> <span>5.0</span></button>
+            <button id="btn-open-login" class="btn-login-header"><ion-icon name="person-circle-outline"></ion-icon> <span>Login</span></button>
+        </div>
+        <div class="logo-container">
+            <img src="logo.jpg" alt="Logo Espetaria do Gaguinho" class="logo">
+        </div>
+        <h1 class="slogan">Seu espeto favorito em um novo endereço.</h1>
+    </header>
+
+    <nav class="category-nav" id="category-nav">
+        <!-- Categories will be injected here -->
+    </nav>
+
+    <main class="menu-container" id="menu-container">
+        <!-- Products will be injected here -->
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p><ion-icon name="time-outline"></ion-icon> Quar à sex 17:00 as 00:00</p>
+            <p><ion-icon name="time-outline"></ion-icon> Sáb e dom 12:00 as 00:00</p>
+            <a href="https://www.instagram.com/espetariadogaguinho" target="_blank" class="instagram-link">
+                <ion-icon name="logo-instagram"></ion-icon> @espetariadogaguinho
+            </a>
+        </div>
+    </footer>
+
+    <!-- Cart Floating Button -->
+    <button class="cart-fab" id="cart-fab" aria-label="Abrir carrinho">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <ion-icon name="cart"></ion-icon>
+            <span>Carrinho</span>
+            <span class="cart-badge" id="cart-badge">0</span>
+        </div>
+        <div class="cart-fab-info">
+            <span class="cart-fab-total" id="cart-fab-total">R$ 0,00</span>
+        </div>
+    </button>
+
+    <!-- Cart Overlay / Modal -->
+    <div class="cart-overlay" id="cart-overlay"></div>
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-header">
+            <h2>Seu Pedido</h2>
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-clear" id="btn-clear" onclick="clearCart()" title="Limpar Carrinho"><ion-icon name="trash-outline"></ion-icon></button>
+                <button class="close-cart" id="close-cart"><ion-icon name="close"></ion-icon></button>
+            </div>
+        </div>
+        
+        <div class="cart-body">
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items injected here -->
+            </div>
+
+            <div class="checkout-section">
+                <div class="delivery-toggle">
+                    <label class="radio-label">
+                        <input type="radio" name="delivery_type" value="delivery" checked>
+                        <span>Delivery</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="delivery_type" value="retirada">
+                        <span>Retirada</span>
+                    </label>
+                </div>
+
+                <div class="delivery-form" id="delivery-form">
+                    <h3>Endereço de Entrega</h3>
+                    <div class="input-group">
+                        <input type="tel" id="cep" placeholder="CEP (Apenas números)" maxlength="8">
+                        <button id="btn-cep" class="btn-cep">Buscar</button>
+                    </div>
+                    <div class="address-fields" id="address-fields">
+                        <input type="text" id="rua" placeholder="Rua" disabled>
+                        <input type="text" id="bairro" placeholder="Bairro" disabled>
+                        <input type="text" id="cidade" placeholder="Cidade" disabled>
+                        <div class="row">
+                            <input type="text" id="numero" placeholder="Número">
+                            <input type="text" id="complemento" placeholder="Complemento (Ex: Casa, Apto)">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-method">
+                    <h3>Forma de Pagamento</h3>
+                    <select id="payment-select" class="custom-select">
+                        <option value="Dinheiro">Dinheiro</option>
+                        <option value="Pix - Trazer máquina">Pix - Trazer máquina</option>
+                        <option value="Cartão de Débito - Maquininha">Cartão de Débito - Maquininha</option>
+                        <option value="Cartão de Crédito - Maquininha">Cartão de Crédito - Maquininha (+5%)</option>
+                    </select>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-line">
+                        <span>Subtotal</span>
+                        <span id="subtotal">R$ 0,00</span>
+                    </div>
+                    <div class="summary-line" id="freight-line">
+                        <span>Frete</span>
+                        <span id="freight">Calcular...</span>
+                    </div>
+                    <div class="summary-line" id="tax-line" style="display: none;">
+                        <span>Acréscimo Cartão (5%)</span>
+                        <span id="tax-amount">R$ 0,00</span>
+                    </div>
+                    <div class="summary-line total">
+                        <span>Total Geral</span>
+                        <span id="total-geral">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <button class="btn-checkout" id="btn-checkout" disabled>
+                    <ion-icon name="logo-whatsapp"></ion-icon> Finalizar Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
