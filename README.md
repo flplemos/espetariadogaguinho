@@ -1,40 +1,43 @@
-# Espetaria do Gaguinho - MVP üç¢
+# Espetaria do Gaguinho - Card·pio Digital
 
-Um aplicativo web moderno, 100% focado no front-end, projetado para oferecer a melhor experi√™ncia de card√°pio digital e delivery para a Espetaria do Gaguinho. Todo o fluxo de pedidos foi otimizado para fechar a compra via WhatsApp, com design elegante, anima√ß√µes fluidas e navega√ß√£o intuitiva.
+Este È o repositÛrio do card·pio digital moderno e interativo da **Espetaria do Gaguinho**. A aplicaÁ„o foi projetada para oferecer a melhor experiÍncia possÌvel ao cliente, facilitando a navegaÁ„o pelos produtos, personalizaÁ„o de combos e o processo final de checkout via WhatsApp.
 
-## üöÄ Funcionalidades
+## ?? Funcionalidades Principais
 
-- **Card√°pio Din√¢mico:** Categorias organizadas com navega√ß√£o "ScrollSpy" (o menu superior acompanha a rolagem da p√°gina).
-- **Carrinho Interativo:** Bot√£o flutuante que pulsa ao adicionar itens, e um modal "glassmorphism" elegante para gerenciar o pedido.
-- **Sistema de Login Simples:** Armazenamento local (Local Storage) para salvar o nome e WhatsApp do cliente.
-- **Op√ß√µes de Entrega:**
-  - **Retirada no Local**
-  - **Delivery:** Integra√ß√£o com ViaCEP para preenchimento autom√°tico do endere√ßo e c√°lculo de taxa de entrega din√¢mico por bairro.
-- **Op√ß√µes de Pagamento:** Formas de pagamento variadas com acr√©scimo din√¢mico de 5% caso a op√ß√£o seja Cart√£o de Cr√©dito.
-- **Valida√ß√µes e Feedback Visual:** Alertas customizados em formato modal, bordas vermelhas e textos din√¢micos orientando o preenchimento de campos obrigat√≥rios.
-- **Sistema de Avalia√ß√µes:** Depoimentos de clientes com intera√ß√£o via estrelas para postar novas avalia√ß√µes.
-- **Hor√°rio de Funcionamento Inteligente:** Selo que capta a hora oficial de Natal/RN e atualiza ao vivo indicando se a loja est√° Aberta ou Fechada.
-- **Checkout via WhatsApp:** Gera√ß√£o autom√°tica de uma mensagem limpa e bem formatada enviada diretamente para o WhatsApp do estabelecimento.
+* **Design Premium e Responsivo**: Interface focada em mobile, mas que adapta-se perfeitamente em telas maiores. EstÈtica "Dark Mode" moderna, que realÁa a aparÍncia dos pratos.
+* **Carrinho de Compras Interativo**: AdiÁ„o de itens de forma fluida. O bot„o de "Adicionar" na vitrine de produtos transforma-se dinamicamente em controles de quantidade (- 1 +) para ajustes r·pidos sem a necessidade de abrir o modal do carrinho.
+* **Combos Personaliz·veis**: Uma seÁ„o especial de Combos, que permite que o cliente "monte" o seu combo escolhendo os sabores especÌficos dos espetos antes de adicion·-los ao carrinho. A UI limita a quantidade permitida de acordo com o tamanho do combo.
+* **IntegraÁ„o Autom·tica com WhatsApp**: Ao finalizar a compra, o sistema compila os produtos, adicionais, combos, c·lculo de frete, mÈtodo de pagamento e gera um link autom·tico para enviar o pedido formatado e pronto para o WhatsApp do restaurante.
+* **Busca de CEP Autom·tica & C·lculo de Frete**: IntegraÁ„o com a API ViaCEP. O sistema autocompleta o endereÁo e calcula o frete baseado no bairro de destino em Natal.
+* **Gerenciamento de Hor·rio Comercial**: FunÁ„o de bloqueio autom·tico que impede a realizaÁ„o de pedidos caso o restaurante esteja fora do seu hor·rio de funcionamento.
+* **Sistema de AvaliaÁıes**: Os clientes podem deixar avaliaÁıes em estrelas, e um modal exibe as an·lises mais recentes, transmitindo confianÁa para novos usu·rios.
+* **Cache Local**: Salva as informaÁıes de endereÁo e contato (nome/telefone) do cliente usando o localStorage do navegador, dispensando o preenchimento de dados recorrentes e agilizando futuras compras.
 
-## üõ† Tecnologias Utilizadas
+## ?? Estrutura de Arquivos Profissional
 
-- **HTML5:** Sem√¢ntico e acess√≠vel.
-- **CSS3:** Vari√°veis (Custom Properties) para f√°cil manuten√ß√£o de temas (ex: Modo Dark, Paleta Laranja Premium `#F97316`), Flexbox, CSS Grid e Anima√ß√µes customizadas.
-- **JavaScript (Vanilla):** Controle de estado, c√°lculos matem√°ticos do carrinho, manipula√ß√£o de DOM e Fetch API para o ViaCEP.
-- **Ionicons:** Biblioteca de √≠cones modernos e leves.
+O projeto est· organizado da seguinte maneira:
 
-## üì¶ Como Executar
+/
++-- index.html            # Arquivo principal (Markup da aplicaÁ„o)
++-- README.md             # DocumentaÁ„o
++-- assets/
+    +-- css/
+    ¶   +-- style.css     # Arquivo centralizado de estilos e vari·veis de cores
+    +-- js/
+    ¶   +-- script.js     # LÛgica central (Carrinho, Combos, Menu, WhatsApp)
+    +-- images/           # Imagens de produtos, logos e assets visuais gerados via IA
 
-1. Clone o reposit√≥rio:
-   ```bash
-   git clone https://github.com/flplemos/espetariadogaguinho.git
-   ```
-2. Abra a pasta do projeto.
-3. Como se trata de um projeto est√°tico (HTML/CSS/JS puros), basta abrir o arquivo `index.html` em qualquer navegador moderno. Para uma melhor experi√™ncia de desenvolvimento, voc√™ pode utilizar a extens√£o **Live Server** do VS Code.
+## ?? Tecnologias Utilizadas
 
-## üé® Design System
+* **HTML5**: Estrutura sem‚ntica do card·pio e modais.
+* **CSS3 Vanilla**: Estilos ricos em vari·veis, flexbox, grid, gradients e transiÁıes suaves.
+* **JavaScript (Vanilla)**: ManipulaÁ„o da DOM em tempo real, estado da aplicaÁ„o, eventos e manipulaÁ„o do DOM.
+* **ViaCEP API**: Busca de endereÁo simplificada.
+* **Ionicons**: Õcones vetorizados.
 
-- **Cor Prim√°ria:** `#F97316` (Laranja Premium)
-- **Fundo:** `#121212` (Dark Mode Nativo)
-- **Superf√≠cies:** Componentes com "Glassmorphism" (transpar√™ncia e desfoque no fundo) para modais.
-- **Tipografia:** `Outfit`, limpa e moderna.
+## ?? DemonstraÁ„o do Fluxo de Pedido
+
+1. O cliente entra na aplicaÁ„o, navega utilizando os botıes de ancoragem do topo, visualiza as fotos.
+2. Adiciona os espetos diretamente na lista. Caso deseje um **Combo**, o modal orientar· na seleÁ„o dos sabores permitidos.
+3. Ao visualizar o carrinho, o cliente escolhe Delivery (informa CEP, n˙mero e pagamento) ou Retirada (visualiza o endereÁo para buscar o pedido).
+4. O clique final gera uma mensagem no WhatsApp com formataÁ„o elegante.

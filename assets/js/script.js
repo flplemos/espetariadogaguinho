@@ -1,6 +1,14 @@
 // Mock Data updated with AI Generated Images
 const menuData = [
     {
+        id: "combos",
+        title: "Combos Especiais",
+        items: [
+            { id: 101, name: "Combo Família (10 Espetos)", desc: "Escolha 10 espetos tradicionais. Acompanha farofa, vinagrete e pão de alho grátis.", price: 85.00, image: "combo_familia.jpg", isCombo: true, comboLimit: 10, comboAllowedIds: [1, 2, 3, 4] },
+            { id: 102, name: "Combo Casal (4 Espetos)", desc: "Escolha 4 espetos tradicionais. Acompanha farofa e 1 pão de alho.", price: 35.00, image: "combo_casal.jpg", isCombo: true, comboLimit: 4, comboAllowedIds: [1, 2, 3, 4] }
+        ]
+    },
+    {
         id: "tradicionais",
         title: "Espetos Tradicionais",
         items: [
@@ -24,17 +32,17 @@ const menuData = [
         title: "Acompanhamentos",
         items: [
             { id: 8, name: "Pão de Alho", desc: "Pão baguete recheado com pasta de alho e queijo.", price: 8.00, image: "pao_alho.jpg" },
-            { id: 9, name: "Farofa da Casa", desc: "Farofa crocante com bacon e cebola na manteiga.", price: 5.00, image: "https://placehold.co/200x200/2c2c2c/ff4500?text=Farofa" },
-            { id: 10, name: "Vinagrete", desc: "Tomate, cebola e pimentão picados com azeite.", price: 4.00, image: "https://placehold.co/200x200/2c2c2c/ff4500?text=Vinagrete" }
+            { id: 9, name: "Farofa da Casa", desc: "Farofa crocante com bacon e cebola na manteiga.", price: 5.00, image: "farofa.jpg" },
+            { id: 10, name: "Vinagrete", desc: "Tomate, cebola e pimentão picados com azeite.", price: 4.00, image: "vinagrete.jpg" }
         ]
     },
     {
         id: "bebidas",
         title: "Bebidas",
         items: [
-            { id: 11, name: "Coca-Cola Lata", desc: "Lata 350ml gelada.", price: 6.00, image: "https://placehold.co/200x200/2c2c2c/ff4500?text=Coca" },
+            { id: 11, name: "Coca-Cola Lata", desc: "Lata 350ml gelada.", price: 6.00, image: "coca_cola.jpg" },
             { id: 12, name: "Cerveja Heineken", desc: "Long Neck 330ml.", price: 10.00, image: "cerveja.jpg" },
-            { id: 13, name: "Água com Gás", desc: "Garrafa 500ml.", price: 4.00, image: "https://placehold.co/200x200/2c2c2c/ff4500?text=Água" }
+            { id: 13, name: "Água com Gás", desc: "Garrafa 500ml.", price: 4.00, image: "agua_gas.jpg" }
         ]
     }
 ];
@@ -252,17 +260,13 @@ const renderMenu = () => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <img src="${item.image}" alt="${item.name}" class="product-img">
+                <img src="assets/images/${item.image}" alt="${item.name}" class="product-img">
                 <div class="product-info">
                     <div>
                         <h3 class="product-name">${item.name}</h3>
                         <p class="product-desc">${item.desc}</p>
                     </div>
-                    <div class="product-footer">
-                        <span class="product-price">${formatMoney(item.price)}</span>
-                        <button class="btn-add" onclick="addToCart(${item.id})">
-                            <ion-icon name="add"></ion-icon>
-                        </button>
+                    <div class="product-footer" id="card-action-${item.id}">
                     </div>
                 </div>
             `;
@@ -270,6 +274,49 @@ const renderMenu = () => {
         });
         section.appendChild(grid);
         container.appendChild(section);
+    });
+    updateAllCardsActions();
+};
+
+const renderCardAction = (item) => {
+    const actionDiv = document.getElementById(`card-action-${item.id}`);
+    if (!actionDiv) return;
+
+    if (item.isCombo) {
+        actionDiv.innerHTML = `
+            <span class="product-price">${formatMoney(item.price)}</span>
+            <button class="btn-add" onclick="addToCart(${item.id})" style="width: auto; padding: 0 16px; border-radius: var(--radius-full); font-size: 0.95rem; font-weight: 600;">
+                Montar
+            </button>
+        `;
+        return;
+    }
+
+    const cartItem = cart.find(i => i.id === item.id && !i.isCombo);
+    if (cartItem && cartItem.qty > 0) {
+        actionDiv.innerHTML = `
+            <span class="product-price">${formatMoney(item.price)}</span>
+            <div class="qty-controls small" style="background: rgba(249, 115, 22, 0.15); border: 1px solid var(--primary); padding: 4px 8px;">
+                <button class="qty-btn" style="color: var(--primary); font-size: 1.2rem;" onclick="updateQty('${cartItem.cartId}', -1)"><ion-icon name="remove-outline"></ion-icon></button>
+                <span class="qty-val" style="color: white;">${cartItem.qty}</span>
+                <button class="qty-btn" style="color: var(--primary); font-size: 1.2rem;" onclick="updateQty('${cartItem.cartId}', 1)"><ion-icon name="add-outline"></ion-icon></button>
+            </div>
+        `;
+    } else {
+        actionDiv.innerHTML = `
+            <span class="product-price">${formatMoney(item.price)}</span>
+            <button class="btn-add" onclick="addToCart(${item.id})">
+                <ion-icon name="add"></ion-icon>
+            </button>
+        `;
+    }
+};
+
+const updateAllCardsActions = () => {
+    menuData.forEach(cat => {
+        cat.items.forEach(item => {
+            renderCardAction(item);
+        });
     });
 };
 
@@ -307,17 +354,135 @@ const findItemById = (id) => {
 };
 
 const addToCart = (id) => {
-    const existing = cart.find(i => i.id === id);
+    const item = findItemById(id);
+    if (!item) return;
+
+    if (item.isCombo) {
+        openComboModal(item);
+        return;
+    }
+
+    const existing = cart.find(i => i.id === id && !i.isCombo);
     if (existing) {
         existing.qty += 1;
     } else {
-        cart.push({ ...findItemById(id), qty: 1 });
+        cart.push({ ...item, qty: 1, cartId: 'item_' + Date.now() + Math.random() });
     }
     updateCartUI();
+    pulseFab();
+};
+
+const pulseFab = () => {
     const fab = document.getElementById('cart-fab');
     fab.classList.add('pulse');
     setTimeout(() => fab.classList.remove('pulse'), 200);
 };
+
+// Combo Modal Logic
+let currentCombo = null;
+let comboSelections = {};
+
+const openComboModal = (combo) => {
+    currentCombo = combo;
+    comboSelections = {};
+    document.getElementById('combo-title').textContent = combo.name;
+    document.getElementById('combo-desc').textContent = combo.desc;
+    document.getElementById('combo-limit').textContent = combo.comboLimit;
+    document.getElementById('combo-price-btn').textContent = formatMoney(combo.price);
+    
+    renderComboOptions();
+    updateComboState();
+    
+    document.getElementById('combo-overlay').classList.add('active');
+};
+
+const renderComboOptions = () => {
+    const list = document.getElementById('combo-options-list');
+    const allowedItems = [];
+    menuData.forEach(cat => {
+        cat.items.forEach(i => {
+            if (currentCombo.comboAllowedIds.includes(i.id)) {
+                allowedItems.push(i);
+            }
+        });
+    });
+
+    list.innerHTML = allowedItems.map(item => {
+        const qty = comboSelections[item.id] || 0;
+        return `
+            <div class="combo-option">
+                <div class="combo-option-info">
+                    <div class="combo-option-name">${item.name}</div>
+                </div>
+                <div class="combo-option-qty">
+                    <button class="qty-btn" onclick="updateComboSelection(${item.id}, -1)"><ion-icon name="remove-circle-outline"></ion-icon></button>
+                    <span class="qty-val" id="combo-qty-${item.id}">${qty}</span>
+                    <button class="qty-btn" onclick="updateComboSelection(${item.id}, 1)"><ion-icon name="add-circle-outline"></ion-icon></button>
+                </div>
+            </div>
+        `;
+    }).join('');
+};
+
+const updateComboSelection = (itemId, delta) => {
+    const currentQty = comboSelections[itemId] || 0;
+    const newQty = currentQty + delta;
+    
+    if (newQty < 0) return;
+    
+    const totalSelected = Object.values(comboSelections).reduce((a, b) => a + b, 0);
+    
+    if (delta > 0 && totalSelected >= currentCombo.comboLimit) {
+        return; // limit reached
+    }
+    
+    comboSelections[itemId] = newQty;
+    document.getElementById(`combo-qty-${itemId}`).textContent = newQty;
+    
+    updateComboState();
+};
+window.updateComboSelection = updateComboSelection;
+
+const updateComboState = () => {
+    const totalSelected = Object.values(comboSelections).reduce((a, b) => a + b, 0);
+    const remaining = currentCombo.comboLimit - totalSelected;
+    
+    document.getElementById('combo-remaining').textContent = remaining;
+    
+    const btn = document.getElementById('btn-add-combo');
+    if (remaining === 0) {
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+    } else {
+        btn.style.opacity = '0.5';
+        btn.style.pointerEvents = 'none';
+    }
+};
+
+document.getElementById('close-combo').addEventListener('click', () => {
+    document.getElementById('combo-overlay').classList.remove('active');
+});
+
+document.getElementById('btn-add-combo').addEventListener('click', () => {
+    const choicesList = [];
+    Object.entries(comboSelections).forEach(([id, qty]) => {
+        if (qty > 0) {
+            const item = findItemById(parseInt(id));
+            choicesList.push(`${qty}x ${item.name}`);
+        }
+    });
+
+    cart.push({
+        ...currentCombo,
+        qty: 1,
+        cartId: 'combo_' + Date.now() + Math.random(),
+        comboChoices: choicesList.join(', ')
+    });
+    
+    document.getElementById('combo-overlay').classList.remove('active');
+    updateCartUI();
+    pulseFab();
+});
 
 const clearCart = () => {
     document.getElementById('confirm-overlay').classList.add('active');
@@ -334,8 +499,8 @@ document.getElementById('btn-confirm-clear').addEventListener('click', () => {
     document.getElementById('confirm-overlay').classList.remove('active');
 });
 
-const updateQty = (id, delta) => {
-    const itemIndex = cart.findIndex(i => i.id === id);
+const updateQty = (cartId, delta) => {
+    const itemIndex = cart.findIndex(i => i.cartId === cartId);
     if (itemIndex > -1) {
         cart[itemIndex].qty += delta;
         if (cart[itemIndex].qty <= 0) cart.splice(itemIndex, 1);
@@ -363,6 +528,7 @@ const updateCartUI = () => {
     }
     renderCartItems();
     updateCheckoutSummary();
+    updateAllCardsActions();
 };
 
 const renderCartItems = () => {
@@ -375,12 +541,13 @@ const renderCartItems = () => {
         <div class="cart-item">
             <div class="cart-item-info">
                 <div class="cart-item-name">${item.qty}x ${item.name}</div>
+                ${item.comboChoices ? `<div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 4px;">[${item.comboChoices}]</div>` : ''}
                 <div class="cart-item-price">${formatMoney(item.price * item.qty)}</div>
             </div>
             <div class="qty-controls">
-                <button class="qty-btn" onclick="updateQty(${item.id}, -1)"><ion-icon name="remove-circle-outline"></ion-icon></button>
+                <button class="qty-btn" onclick="updateQty('${item.cartId}', -1)"><ion-icon name="remove-circle-outline"></ion-icon></button>
                 <span class="qty-val">${item.qty}</span>
-                <button class="qty-btn" onclick="updateQty(${item.id}, 1)"><ion-icon name="add-circle-outline"></ion-icon></button>
+                <button class="qty-btn" onclick="updateQty('${item.cartId}', 1)"><ion-icon name="add-circle-outline"></ion-icon></button>
             </div>
         </div>
     `).join('');
@@ -451,6 +618,11 @@ document.querySelectorAll('input[name="delivery_type"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
         deliveryType = e.target.value;
         document.getElementById('delivery-form').style.display = deliveryType === 'retirada' ? 'none' : 'block';
+        
+        const pickupInfo = document.getElementById('pickup-info');
+        if (pickupInfo) {
+            pickupInfo.style.display = deliveryType === 'retirada' ? 'block' : 'none';
+        }
         
         const paymentSelect = document.getElementById('payment-select');
         if (deliveryType === 'retirada') {
@@ -582,6 +754,9 @@ document.getElementById('btn-checkout').addEventListener('click', () => {
     text += `----------------------------------------%0A`;
     cart.forEach(item => { 
         text += `👉 ${item.qty}x ${item.name} (${formatMoney(item.price * item.qty)})%0A`; 
+        if (item.comboChoices) {
+            text += `   ↳ [${item.comboChoices}]%0A`;
+        }
     });
     
     text += `%0A💰 *VALORES:*%0A`;
