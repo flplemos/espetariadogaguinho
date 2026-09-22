@@ -67,18 +67,19 @@ const loadUserData = () => {
                 document.getElementById('cep').value = addressData.cep;
                 document.getElementById('rua').value = addressData.logradouro;
                 document.getElementById('bairro').value = addressData.bairro;
-                document.getElementById('cidade').value = addressData.localidade;
+                document.getElementById('cidade').value = `${addressData.localidade} - ${addressData.uf}`;
                 document.getElementById('numero').value = addressData.numero || '';
                 document.getElementById('complemento').value = addressData.complemento || '';
                 document.getElementById('address-fields').classList.add('active');
                 calculateFreight(addressData);
             } else if (parsed.cep) {
-                // Cache antigo incompleto, aciona a busca automaticamente
+                // Cache antigo incompleto, aciona a busca automaticamente via função
                 document.getElementById('cep').value = parsed.cep;
                 document.getElementById('numero').value = parsed.numero || '';
                 document.getElementById('complemento').value = parsed.complemento || '';
-                // Aguarda um curto tempo para garantir que os listeners estejam prontos
-                setTimeout(() => document.getElementById('btn-cep').click(), 100);
+                
+                // Fetch explícito sem depender do DOM click event
+                performCepSearch(parsed.cep);
             }
         }
     }
@@ -482,11 +483,12 @@ const calculateFreight = (data) => {
     updateCheckoutSummary();
 };
 
-document.getElementById('btn-cep').addEventListener('click', async () => {
-    const cep = document.getElementById('cep').value.replace(/\D/g, '');
-    if (cep.length !== 8) { alert('Digite um CEP válido com 8 números.'); return; }
+const performCepSearch = async (cepText) => {
+    const cep = cepText.replace(/\D/g, '');
+    if (cep.length !== 8) return;
 
     const btn = document.getElementById('btn-cep');
+    const originalText = btn.innerHTML;
     btn.innerHTML = '<ion-icon name="sync-outline" class="spin"></ion-icon>';
     
     try {
@@ -501,10 +503,19 @@ document.getElementById('btn-cep').addEventListener('click', async () => {
         document.getElementById('address-fields').classList.add('active');
         calculateFreight(data);
     } catch {
-        alert('CEP não encontrado. Verifique e tente novamente.');
+        showInfoModal('Erro', 'CEP não encontrado. Verifique e tente novamente.');
     } finally {
-        btn.textContent = 'Buscar';
+        btn.innerHTML = originalText;
     }
+};
+
+document.getElementById('btn-cep').addEventListener('click', () => {
+    const cepText = document.getElementById('cep').value;
+    if (!cepText) {
+        showInfoModal('Atenção', 'Digite o CEP.');
+        return;
+    }
+    performCepSearch(cepText);
 });
 
 document.getElementById('numero').addEventListener('input', updateCheckoutSummary);
