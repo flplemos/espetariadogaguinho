@@ -411,6 +411,12 @@ const updateCheckoutSummary = () => {
         cepInput.style.borderColor = '';
         numInput.style.borderColor = '';
         compInput.style.borderColor = '';
+    } else if (subtotal < 10) {
+        checkoutBtn.disabled = true;
+        checkoutBtn.innerHTML = `<ion-icon name="alert-circle-outline"></ion-icon> Faltam ${formatMoney(10 - subtotal)} (Mín: R$ 10)`;
+        cepInput.style.borderColor = '';
+        numInput.style.borderColor = '';
+        compInput.style.borderColor = '';
     } else if (deliveryType === 'delivery' && (!addressData || !numero || !complemento)) {
         checkoutBtn.disabled = true;
         checkoutBtn.innerHTML = '<ion-icon name="alert-circle-outline"></ion-icon> Faltam Dados de Entrega';
