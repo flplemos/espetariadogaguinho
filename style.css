@@ -33,6 +33,14 @@ body {
     overflow-x: hidden;
 }
 
+/* Prevent Background Scrolling */
+body:has(.login-overlay.active),
+body:has(.confirm-overlay.active),
+body:has(.reviews-overlay.active),
+body:has(.cart-overlay.active) {
+    overflow: hidden;
+}
+
 /* Login Modal */
 .login-overlay {
     position: fixed;
@@ -198,6 +206,7 @@ body {
 .reviews-list {
     flex: 1;
     overflow-y: auto;
+    overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -669,6 +678,7 @@ body {
 .cart-body {
     flex: 1;
     overflow-y: auto;
+    overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
 }
