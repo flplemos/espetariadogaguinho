@@ -60,15 +60,26 @@ const loadUserData = () => {
         btnOpenLogin.classList.add('logged');
         
         if (savedAddress) {
-            addressData = JSON.parse(savedAddress);
-            document.getElementById('cep').value = addressData.cep;
-            document.getElementById('rua').value = addressData.logradouro;
-            document.getElementById('bairro').value = addressData.bairro;
-            document.getElementById('cidade').value = addressData.localidade;
-            document.getElementById('numero').value = addressData.numero || '';
-            document.getElementById('complemento').value = addressData.complemento || '';
-            document.getElementById('address-fields').classList.add('active');
-            calculateFreight(addressData);
+            const parsed = JSON.parse(savedAddress);
+            if (parsed.logradouro) {
+                // Cache completo válido
+                addressData = parsed;
+                document.getElementById('cep').value = addressData.cep;
+                document.getElementById('rua').value = addressData.logradouro;
+                document.getElementById('bairro').value = addressData.bairro;
+                document.getElementById('cidade').value = addressData.localidade;
+                document.getElementById('numero').value = addressData.numero || '';
+                document.getElementById('complemento').value = addressData.complemento || '';
+                document.getElementById('address-fields').classList.add('active');
+                calculateFreight(addressData);
+            } else if (parsed.cep) {
+                // Cache antigo incompleto, aciona a busca automaticamente
+                document.getElementById('cep').value = parsed.cep;
+                document.getElementById('numero').value = parsed.numero || '';
+                document.getElementById('complemento').value = parsed.complemento || '';
+                // Aguarda um curto tempo para garantir que os listeners estejam prontos
+                setTimeout(() => document.getElementById('btn-cep').click(), 100);
+            }
         }
     }
 };
